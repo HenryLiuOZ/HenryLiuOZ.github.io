@@ -194,7 +194,7 @@
 <p><img src="/images/visual_SLAM.jpeg" alt="visual SLAM"></p>
 <p>这里我们介绍最基础的SLAM —— 使用雷达信号的 2D SLAM 算法  </p>
 <ol>
-<li>机器人在原地扫描一圈，探测到障碍物的位置标记为100，无障碍物的位置标记为0，其他位置保持初始值-1，并设初始位置为地图原点（一般是这样）<br>  <img src="/images/first_scan1.jpeg" alt="first scan1"><br>  <img src="/images/first_scan2.jpeg" alt="first scan2"></li>
+<li>机器人在初始位置原地扫描一圈，探测到障碍物的位置标记为100，无障碍物的位置标记为0，其他位置保持初始值-1<br>  <img src="/images/first_scan1.jpeg" alt="first scan1"><br>  <img src="/images/first_scan2.jpeg" alt="first scan2"></li>
 <li>机器人在移动一定时间后再进行一次扫描，并与最新的地图进行特征比较（在雷达SLAM中，地图的特征是障碍物栅格的排布情况），进行旋转贴合，从而得到拓展后的地图和当前基于上一次地图更新的相对位置，这一步是SLAM的核心<br>  <img src="/images/map_fitting1.jpeg" alt="map fitting1"><br>  <img src="/images/map_fitting2.jpeg" alt="map fitting2"></li>
 <li>重复以上步骤，就可以获得完整的栅格地图，在导航时可以在无障碍区域进行路径规划<br>  <img src="/images/full_map.jpeg" alt="full map"></li>
 </ol>
