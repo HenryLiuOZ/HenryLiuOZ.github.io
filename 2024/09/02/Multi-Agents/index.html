@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Multi Agents | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="此博客与我的团队项目“多机对抗”同步   Chapter1：在gazebo中独立操纵多台机器人1. 在gazebo中加载两台机器人最简单的想法是直接在gazebo中加载两台机器人，再通过发布 不同的速度控制话题 分别控制这两台机器人，这里，我自定义了一个simp_four_wheel.urdf文件，你也可以使用两轮差速模型。不清楚如何编写urdf文件的可以翻阅我的博客：ROS2-Learning&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Multi Agents">
+<meta property="og:url" content="http://example.com/2024/09/02/Multi-Agents/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="此博客与我的团队项目“多机对抗”同步   Chapter1：在gazebo中独立操纵多台机器人1. 在gazebo中加载两台机器人最简单的想法是直接在gazebo中加载两台机器人，再通过发布 不同的速度控制话题 分别控制这两台机器人，这里，我自定义了一个simp_four_wheel.urdf文件，你也可以使用两轮差速模型。不清楚如何编写urdf文件的可以翻阅我的博客：ROS2-Learning&amp;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/Multi-Agents/two_robots.png">
+<meta property="og:image" content="http://example.com/images/Multi-Agents/failure_ns.png">
+<meta property="article:published_time" content="2024-09-02T05:51:46.000Z">
+<meta property="article:modified_time" content="2024-09-02T10:03:37.453Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Multi-Agents/two_robots.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Multi-Agents" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/09/02/Multi-Agents/" class="article-date">
+  <time class="dt-published" datetime="2024-09-02T05:51:46.000Z" itemprop="datePublished">2024-09-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Multi Agents
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>此博客与我的团队项目“多机对抗”同步  </p>
+<h2 id="Chapter1：在gazebo中独立操纵多台机器人"><a href="#Chapter1：在gazebo中独立操纵多台机器人" class="headerlink" title="Chapter1：在gazebo中独立操纵多台机器人"></a>Chapter1：在gazebo中独立操纵多台机器人</h2><h3 id="1-在gazebo中加载两台机器人"><a href="#1-在gazebo中加载两台机器人" class="headerlink" title="1. 在gazebo中加载两台机器人"></a>1. 在gazebo中加载两台机器人</h3><p>最简单的想法是直接在gazebo中加载两台机器人，再通过发布 <em>不同的速度控制话题</em> 分别控制这两台机器人，这里，我自定义了一个simp_four_wheel.urdf文件，你也可以使用<a target="_blank" rel="noopener" href="https://github.com/fishros/fishbot/blob/navgation2/src/fishbot_description/urdf/fishbot_gazebo.urdf">两轮差速模型</a>。不清楚如何编写urdf文件的可以翻阅我的博客：<strong>ROS2-Learning&#x2F;Chapter 4</strong>  </p>
+<hr>
+<p>小插曲，gazebo保存地图文件有两种格式，一种是直接创建好地图并直接Save，地图会被保存为sdf文件+config文件组成的一个文件夹，这个sdf地图文件无法通过命令行（launch文件）启动，而是在gazebo中点击Insert添加<br>如果想要通过launch文件启动地图文件，你需要将gazebo文件<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_45084787/article/details/136536598">另存为.world文件</a></p>
+<hr>
+<p>接下来编写launch文件，直接翻倍spawn_entity节点：  </p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Start Gazebo server</span></span><br><span class="line">start_gazebo_cmd =  ExecuteProcess(</span><br><span class="line">    cmd=[<span class="string">&#x27;gazebo&#x27;</span>, <span class="string">&#x27;--verbose&#x27;</span>,<span class="string">&#x27;-s&#x27;</span>, <span class="string">&#x27;libgazebo_ros_init.so&#x27;</span>, <span class="string">&#x27;-s&#x27;</span>, <span class="string">&#x27;libgazebo_ros_factory.so&#x27;</span>, gazebo_world_path],</span><br><span class="line">    output=<span class="string">&#x27;screen&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Launch the robot</span></span><br><span class="line">spawn_entity_1_cmd = Node(</span><br><span class="line">    package=<span class="string">&#x27;gazebo_ros&#x27;</span>, </span><br><span class="line">    executable=<span class="string">&#x27;spawn_entity.py&#x27;</span>,</span><br><span class="line">    name=<span class="string">&#x27;spawn_entity_1&#x27;</span>,</span><br><span class="line">    arguments=[<span class="string">&#x27;-entity&#x27;</span>, <span class="string">&#x27;robot1&#x27;</span>,  <span class="string">&#x27;-file&#x27;</span>, urdf_model_path ,<span class="string">&#x27;-x&#x27;</span>, <span class="string">&#x27;-5&#x27;</span>], output=<span class="string">&#x27;screen&#x27;</span>)</span><br><span class="line"></span><br><span class="line">spawn_entity_2_cmd = Node(</span><br><span class="line">    package=<span class="string">&#x27;gazebo_ros&#x27;</span>, </span><br><span class="line">    executable=<span class="string">&#x27;spawn_entity.py&#x27;</span>,</span><br><span class="line">    name=<span class="string">&#x27;spawn_entity_2&#x27;</span>,</span><br><span class="line">    arguments=[<span class="string">&#x27;-entity&#x27;</span>, <span class="string">&#x27;robot2&#x27;</span>,  <span class="string">&#x27;-file&#x27;</span>, urdf_model_path ,<span class="string">&#x27;-x&#x27;</span>, <span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;-Y&#x27;</span>, <span class="string">&#x27;3.14&#x27;</span>], output=<span class="string">&#x27;screen&#x27;</span>)</span><br><span class="line"></span><br><span class="line">rqt_steering_cmd = Node(</span><br><span class="line">    package=<span class="string">&#x27;rqt_robot_steering&#x27;</span>, </span><br><span class="line">    executable=<span class="string">&#x27;rqt_robot_steering&#x27;</span>,</span><br><span class="line">    output=<span class="string">&#x27;screen&#x27;</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Multi-Agents/two_robots.png" alt="two_robots"></p>
+<p>现在使用rqt_robot_steering，可以看到两辆小车同时运动，这是由于这两辆小车是通过同一个urdf文件加载的，而在对应的urdf文件中：  </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">gazebo</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugin</span> <span class="attr">name</span>=<span class="string">&quot;four_wheels_controller&quot;</span> <span class="attr">filename</span>=<span class="string">&quot;libgazebo_ros_diff_drive.so&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">ros</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">namespace</span>&gt;</span>/<span class="tag">&lt;/<span class="name">namespace</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">remapping</span>&gt;</span>cmd_vel:=cmd_vel<span class="tag">&lt;/<span class="name">remapping</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">remapping</span>&gt;</span>odom:=odom<span class="tag">&lt;/<span class="name">remapping</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">ros</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>两辆小车通过diff_drive插件，订阅到的cmd_vel主题是相同的，所以无法分别控制<br>解决方案是再写一个urdf文件，并将它的diff_drive插件订阅的cmd_vel话题map到一个其他的名称，如</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">gazebo</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugin</span> <span class="attr">name</span>=<span class="string">&quot;four_wheels_controller&quot;</span> <span class="attr">filename</span>=<span class="string">&quot;libgazebo_ros_diff_drive.so&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">ros</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">namespace</span>&gt;</span>/robot2<span class="tag">&lt;/<span class="name">namespace</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">remapping</span>&gt;</span>cmd_vel:=/robot2/cmd_vel<span class="tag">&lt;/<span class="name">remapping</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">remapping</span>&gt;</span>odom:=/robot2/odom<span class="tag">&lt;/<span class="name">remapping</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">ros</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-尝试使用节点参数namespace：失败"><a href="#2-尝试使用节点参数namespace：失败" class="headerlink" title="2. 尝试使用节点参数namespace：失败"></a>2. 尝试使用节点参数namespace：失败</h3><p>在刚才的解决方案中，有两个问题：</p>
+<ol>
+<li>两个节点的link&#x2F;joint名称是完全相同的，使用robot_state_publisher发布时两个机器人的消息会混淆，导致rviz会认为这个环境中只有一个机器人，但它同时存在于当前世界下的两个位置，在rviz中的体现是机器人不停地在两个位置之间闪烁，如果希望rviz可以区分这两个机器人，那么你对应机器人的urdf文件的所有link&#x2F;joint的名称都要做出区分</li>
+<li>如果需要加载更多机器人，只能编写更多的urdf文件，每个机器人的文件的架构是一样的，但机器人的所有名称都要做修改，极其繁琐</li>
+</ol>
+<p>我最初的想法是使用robot_state_publisher等节点的namespace参数，从逻辑上来讲namespace参数会影响spawn_entity与robot_state_publisher发布的关于机器人的所有消息，包括link&#x2F;joint与插件的输入输出接口，都加上对应的命名空间，但实际操作后：  </p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Start Gazebo server</span></span><br><span class="line">start_gazebo_cmd =  ExecuteProcess(</span><br><span class="line">    cmd=[<span class="string">&#x27;gazebo&#x27;</span>, <span class="string">&#x27;--verbose&#x27;</span>,<span class="string">&#x27;-s&#x27;</span>, <span class="string">&#x27;libgazebo_ros_init.so&#x27;</span>, <span class="string">&#x27;-s&#x27;</span>, <span class="string">&#x27;libgazebo_ros_factory.so&#x27;</span>, gazebo_world_path],</span><br><span class="line">    output=<span class="string">&#x27;screen&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Launch the robot</span></span><br><span class="line">spawn_entity_1_cmd = Node(</span><br><span class="line">    package=<span class="string">&#x27;gazebo_ros&#x27;</span>, </span><br><span class="line">    executable=<span class="string">&#x27;spawn_entity.py&#x27;</span>,</span><br><span class="line">    name=<span class="string">&#x27;spawn_entity_1&#x27;</span>,</span><br><span class="line">    namespace=<span class="string">&#x27;robot1&#x27;</span>,</span><br><span class="line">    arguments=[<span class="string">&#x27;-entity&#x27;</span>, <span class="string">&#x27;robot1&#x27;</span>,  <span class="string">&#x27;-file&#x27;</span>, urdf_model_path ,<span class="string">&#x27;-x&#x27;</span>, <span class="string">&#x27;-5&#x27;</span>], output=<span class="string">&#x27;screen&#x27;</span>)</span><br><span class="line"></span><br><span class="line">spawn_entity_2_cmd = Node(</span><br><span class="line">    package=<span class="string">&#x27;gazebo_ros&#x27;</span>, </span><br><span class="line">    executable=<span class="string">&#x27;spawn_entity.py&#x27;</span>,</span><br><span class="line">    name=<span class="string">&#x27;spawn_entity_2&#x27;</span>,</span><br><span class="line">    namespace=<span class="string">&#x27;robot2&#x27;</span>,</span><br><span class="line">    arguments=[<span class="string">&#x27;-entity&#x27;</span>, <span class="string">&#x27;robot2&#x27;</span>,  <span class="string">&#x27;-file&#x27;</span>, urdf_model_path ,<span class="string">&#x27;-x&#x27;</span>, <span class="string">&#x27;5&#x27;</span>, <span class="string">&#x27;-Y&#x27;</span>, <span class="string">&#x27;3.14&#x27;</span>], output=<span class="string">&#x27;screen&#x27;</span>)</span><br><span class="line"></span><br><span class="line">rqt_steering_cmd = Node(</span><br><span class="line">    package=<span class="string">&#x27;rqt_robot_steering&#x27;</span>, </span><br><span class="line">    executable=<span class="string">&#x27;rqt_robot_steering&#x27;</span>,</span><br><span class="line">    output=<span class="string">&#x27;screen&#x27;</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">robot_state_publisher1_node = Node(</span><br><span class="line">    package=<span class="string">&#x27;robot_state_publisher&#x27;</span>,</span><br><span class="line">    executable=<span class="string">&#x27;robot_state_publisher&#x27;</span>,</span><br><span class="line">    name=<span class="string">&#x27;robot_state_publisher1&#x27;</span>,</span><br><span class="line">    namespace=<span class="string">&#x27;robot1&#x27;</span>,</span><br><span class="line">    arguments=[urdf_model_path],</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">joint_state_publisher1_node = Node(</span><br><span class="line">    package=<span class="string">&#x27;joint_state_publisher&#x27;</span>,</span><br><span class="line">    executable=<span class="string">&#x27;joint_state_publisher&#x27;</span>,</span><br><span class="line">    name=<span class="string">&#x27;joint_state_publisher1&#x27;</span>,</span><br><span class="line">    namespace=<span class="string">&#x27;robot1&#x27;</span>,</span><br><span class="line">    arguments=[urdf_model_path],</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">rviz2_node = Node(</span><br><span class="line">    package=<span class="string">&#x27;rviz2&#x27;</span>,</span><br><span class="line">    executable=<span class="string">&#x27;rviz2&#x27;</span>,</span><br><span class="line">    name=<span class="string">&#x27;rviz2&#x27;</span>,</span><br><span class="line">    output=<span class="string">&#x27;screen&#x27;</span>,</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/Multi-Agents/failure_ns.png" alt="failure_ns"></p>
+<p>frame名称和cmd_vel依旧没有命名空间前缀，但robot_state_publisher发布的joint_states和robot_description拥有命名空间，我的判断是spawn_entity节点接收namespace后无法为urdf文件中的插件节点加上命名空间前缀  </p>
+<h3 id="3-xacro文件的使用"><a href="#3-xacro文件的使用" class="headerlink" title="3. xacro文件的使用"></a>3. xacro文件的使用</h3><hr>
+<p>在这一部分，我参考了<a target="_blank" rel="noopener" href="https://robotics.snowcron.com/robotics_ros2/dif_drive_xacro.htm">snowcron</a>并对其<a target="_blank" rel="noopener" href="https://robotics.snowcron.com/robotics_ros2/multi_bot_03_intro.htm">源码</a>进行了分割</p>
+<hr>
+<p>urdf（xml）文件无法使用参数，变量等抽象化的术式，这也导致我们无法向urdf文件传入参数（如robot_name&#x3D;’robot1’）来去修改urdf文件<br>xacro文件是xml macro。xacro实用程序运行所有宏并输出结果，生成单个文件，其方式类似于预处理器对包含文件和宏执行的操作，通过xacro文件，我们可以传递参数，定义变量，从而对urdf代码进行分块，并 <strong>实时生成</strong> 符合我们要求的urdf文件  </p>
+<p>使xacro文件有意义的文件头：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">robot</span> <span class="attr">xmlns:xacro</span>=<span class="string">&quot;http://www.ros.org/wiki/xacro&quot;</span> <span class="attr">name</span>=<span class="string">&quot;bot&quot;</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- all other stuff --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">robot</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>定义变量并使用：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">xacro:property</span> <span class="attr">name</span>=<span class="string">&quot;wheel_radius&quot;</span> <span class="attr">value</span>=<span class="string">&quot;0.04&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">xacro:property</span> <span class="attr">name</span>=<span class="string">&quot;wheel_length&quot;</span> <span class="attr">value</span>=<span class="string">&quot;0.05&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">xacro:property</span> <span class="attr">name</span>=<span class="string">&quot;wheel_color_name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;red&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">xacro:property</span> <span class="attr">name</span>=<span class="string">&quot;wheel_color_rgb&quot;</span> <span class="attr">value</span>=<span class="string">&quot;1 0 0 1&quot;</span> /&gt;</span>  </span><br><span class="line"><span class="comment">&lt;!--允许四则运算和括号--&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">name</span>=<span class="string">&quot;$&#123;wheel_name&#125;&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">visual</span>&gt;</span><span class="tag">&lt;<span class="name">geometry</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">cylinder</span> <span class="attr">radius</span>=<span class="string">&quot;$&#123;wheeldiam/2&#125;&quot;</span> <span class="attr">length</span>=<span class="string">&quot;0.1&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">origin</span> <span class="attr">xyz</span>=<span class="string">&quot;$&#123;reflect*(width+.02)&#125; 0 0.25&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>定义一个宏并使用：  </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">xacro:macro</span> <span class="attr">name</span>=<span class="string">&quot;wheel&quot;</span> <span class="attr">params</span>=<span class="string">&quot;wheel_name&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">name</span>=<span class="string">&quot;$&#123;wheel_name&#125;&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">visual</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">geometry</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">cylinder</span> <span class="attr">radius</span>=<span class="string">&quot;$&#123;wheel_radius&#125;&quot;</span> <span class="attr">length</span>=<span class="string">&quot;$&#123;wheel_length&#125;&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">geometry</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">material</span> <span class="attr">name</span>=<span class="string">&quot;$&#123;wheel_color_name&#125;&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">color</span> <span class="attr">rgba</span>=<span class="string">&quot;$&#123;wheel_color_rgb&#125;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">material</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">visual</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">link</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">xacro:macro</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">xacro:wheel</span> <span class="attr">wheel_name</span>=<span class="string">&quot;right_wheel_frontside&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>声明参数与其默认值：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">robot</span> <span class="attr">xmlns:xacro</span>=<span class="string">&quot;http://www.ros.org/wiki/xacro&quot;</span> <span class="attr">name</span>=<span class="string">&quot;multi_bot_03&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">xacro:arg</span> <span class="attr">name</span>=<span class="string">&quot;namespace&quot;</span> <span class="attr">default</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xacro:arg</span> <span class="attr">name</span>=<span class="string">&quot;robot_material_name&quot;</span> <span class="attr">default</span>=<span class="string">&quot;Green&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xacro:arg</span> <span class="attr">name</span>=<span class="string">&quot;robot_material_color_rgb&quot;</span> <span class="attr">default</span>=<span class="string">&quot;0 1 0 1&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">xacro:include</span> <span class="attr">filename</span>=<span class="string">&quot;$(find multi_bot_03)/description/xacro/inertial_macros.xacro&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xacro:include</span> <span class="attr">filename</span>=<span class="string">&quot;$(find multi_bot_03)/description/xacro/lidar.xacro&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xacro:include</span> <span class="attr">filename</span>=<span class="string">&quot;$(find multi_bot_03)/description/xacro/camera.xacro&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xacro:include</span> <span class="attr">filename</span>=<span class="string">&quot;$(find multi_bot_03)/description/xacro/imu_sensor.xacro&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">xacro:include</span> <span class="attr">filename</span>=<span class="string">&quot;$(find multi_bot_03)/description/xacro/gazebo_control.xacro&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xacro:include</span> <span class="attr">filename</span>=<span class="string">&quot;$(find multi_bot_03)/description/xacro/robot_core.xacro&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">robot</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在robot_core.xacro中使用这些参数，这里使用了$(arg namespace)：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">robot</span> <span class="attr">xmlns:xacro</span>=<span class="string">&quot;http://www.ros.org/wiki/xacro&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xacro:macro</span> <span class="attr">name</span>=<span class="string">&quot;box_link&quot;</span> </span></span><br><span class="line"><span class="tag">        <span class="attr">params</span>=<span class="string">&quot;name size color color_rgb mass mass_x mass_y mass_z&quot;</span> &gt;</span></span><br><span class="line">        </span><br><span class="line">        # Here we use the &quot;namespace&quot; as a prefix</span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">name</span>=<span class="string">&quot;$(arg namespace)/$&#123;name&#125;&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">visual</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">geometry</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">box</span> <span class="attr">size</span>=<span class="string">&quot;$&#123;size&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">geometry</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">material</span> <span class="attr">name</span>=<span class="string">&quot;$&#123;color&#125;&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">color</span> <span class="attr">rgba</span>=<span class="string">&quot;$&#123;color_rgb&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">material</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">visual</span>&gt;</span></span><br><span class="line">            ...</span><br><span class="line">        <span class="tag">&lt;/<span class="name">link</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">xacro:macro</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>通过launch.py文件向xacro文件传递参数：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">robot_description_config = xacro.process_file(</span><br><span class="line">def_urdf,</span><br><span class="line">mappings=&#123;</span><br><span class="line">    <span class="comment"># &quot;robot_name&quot;: robot[&#x27;name&#x27;],</span></span><br><span class="line">    <span class="string">&quot;namespace&quot;</span>: namespace,</span><br><span class="line">    <span class="string">&quot;robot_material_name&quot;</span>: robot[<span class="string">&#x27;color_name&#x27;</span>],</span><br><span class="line">    <span class="string">&quot;robot_material_color_rgb&quot;</span>: robot[<span class="string">&#x27;color_rgb&#x27;</span>],</span><br><span class="line">&#125;,</span><br><span class="line">                        )</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2024/09/02/Multi-Agents/" data-id="cm0ku4u150000x4k3fj0j90ug" data-title="Multi Agents" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2024/07/28/ROS2-Learning/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ROS2_Learning</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/07/">July 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/09/02/Multi-Agents/">Multi Agents</a>
+          </li>
+        
+          <li>
+            <a href="/2024/07/28/ROS2-Learning/">ROS2_Learning</a>
+          </li>
+        
+          <li>
+            <a href="/2024/07/28/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
