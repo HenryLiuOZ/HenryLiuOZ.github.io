@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>MARL | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="此博客主要介绍多智能体强化学习算法（MARL）   Chapter1：背景与基础知识（强化学习）参考：强化学习课程单智能体强化学习旨在解决一类称为马尔可夫决策过程 (MDP) 的问题。强化学习的假设是代理能够在一个 稳定环境 （状态转移概率和奖励函数是恒定的）中通过与环境的交互寻找到特定环境下更有可能最大化奖励的行为。在 MDP 中，单个智能体基于 当前环境 （马尔可夫性：环境状态转移的概率仅依赖">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MARL">
+<meta property="og:url" content="http://example.com/2024/09/08/MARL/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="此博客主要介绍多智能体强化学习算法（MARL）   Chapter1：背景与基础知识（强化学习）参考：强化学习课程单智能体强化学习旨在解决一类称为马尔可夫决策过程 (MDP) 的问题。强化学习的假设是代理能够在一个 稳定环境 （状态转移概率和奖励函数是恒定的）中通过与环境的交互寻找到特定环境下更有可能最大化奖励的行为。在 MDP 中，单个智能体基于 当前环境 （马尔可夫性：环境状态转移的概率仅依赖">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/MARL/value_function.png">
+<meta property="og:image" content="http://example.com/images/MARL/cooperate_and_compete.png">
+<meta property="og:image" content="http://example.com/images/MARL/CTDE.png">
+<meta property="article:published_time" content="2024-09-08T09:05:10.000Z">
+<meta property="article:modified_time" content="2024-09-08T14:10:23.905Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/MARL/value_function.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-MARL" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/09/08/MARL/" class="article-date">
+  <time class="dt-published" datetime="2024-09-08T09:05:10.000Z" itemprop="datePublished">2024-09-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      MARL
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>此博客主要介绍多智能体强化学习算法（MARL）  </p>
+<h2 id="Chapter1：背景与基础知识（强化学习）"><a href="#Chapter1：背景与基础知识（强化学习）" class="headerlink" title="Chapter1：背景与基础知识（强化学习）"></a>Chapter1：背景与基础知识（强化学习）</h2><p>参考：<a target="_blank" rel="noopener" href="https://huggingface.co/learn/deep-rl-course/unit1/what-is-rl">强化学习课程</a><br>单智能体强化学习旨在解决一类称为马尔可夫决策过程 (MDP) 的问题。强化学习的假设是代理能够在一个 <strong>稳定环境</strong> （状态转移概率和奖励函数是恒定的）中通过与环境的交互寻找到特定环境下更有可能最大化奖励的行为。<br>在 MDP 中，单个智能体基于 <strong>当前环境</strong> （马尔可夫性：环境状态转移的概率仅依赖于当前状态和动作）采取某些action并与环境进行交互，这些动作可能会改变环境的状态，并向agent（智能体）反馈奖励r。强化学习算法以最大化预期回报（即在环境中获得的奖励总和）为目标，寻找最优策略π∗(s-&gt;a)<br>强化学习算法中有两个函数：策略函数和价值函数。策略函数是将当前环境映射到动作的函数，描述为a&#x3D;π(s)或π(a|s)；价值函数是从策略和当前状态映射到期望奖励的函数，表示智能体从该状态开始并按照当前策略采取行动可以获得的预期总回报，描述为：</p>
+<p><img src="/images/MARL/value_function.png" alt="value_function"></p>
+<p>注意这里强化学习算法会基于折扣率γ对未来奖励进行加权，这是算法鼓励智能体去获取更唾手可得&#x2F;可预测的奖励<br>强化学习算法还考虑探索和利用的权衡。在强化学习中，策略函数并不总是直接追求最优预期回报，尤其是在学习过程的早期阶段。这是因为价值函数的初始状态通常是不完全的，智能体需要通过探索来发现更好的行为策略。这里可以参考多臂老虎机中的epsilon-Greedy算法  </p>
+<hr>
+<p>参考：<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/9922205">多智能体强化学习综述</a><br>在强化学习算法开辟的早期，基于策略的算法和基于价值的算法是分离的，<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1707.06347">PPO算法</a>将两种范式结合到了一种actor-critic架构中，该架构使用基于价值的评论家来改进演员（或策略）的更新  </p>
+<h2 id="Chapter2：多智能体强化学习中的主要问题"><a href="#Chapter2：多智能体强化学习中的主要问题" class="headerlink" title="Chapter2：多智能体强化学习中的主要问题"></a>Chapter2：多智能体强化学习中的主要问题</h2><p>参考：<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/9922205">多智能体强化学习综述</a>  </p>
+<h3 id="合作与竞争"><a href="#合作与竞争" class="headerlink" title="- 合作与竞争"></a>- 合作与竞争</h3><p>MARL 环境之间的一个重要区别是每个代理的目标如何相互关联。这可以分为完全合作、完全竞争和混合合作竞争<br>在合作环境中，所有代理都致力于实现一个共同的目标。例如，所有代理都希望完好无损地到达目的地。通常，所有代理共享一个共同的奖励函数；相比之下，竞争性环境（例如纸牌或棋盘游戏）通常被建模为零和马尔可夫博弈，其中所有智能体的收益总和为零。混合环境结合了使用总和收益的合作和竞争智能体。例如，在团队游戏中，智能体必须与队友合作，同时与对方团队竞争。<br><a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/abs/pii/S1389041701000158">Littmann等学者</a>指出，在竞争性环境中，与任意对手的竞争并从中学习是可保证的，而在合作环境中，必须做出强有力的假设来保证收敛  </p>
+<hr>
+<p><em><strong>from cooperate to compete, how far?</strong></em></p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1511.08779">Multiagent Cooperation and Competition with Deep Reinforcement Learning</a>是一篇早期的单智能体强化学习行为分析文章，这篇文章首次将 DQN 算法与 IQL 结合起来，并将其应用到 ALE 环境中的乒乓游戏中  </p>
+<p><img src="/images/MARL/cooperate_and_compete.png" alt="cooperate_and_compete"></p>
+<p>在这样一个环境中，每个智能体拥有独立的 Q network，独自采集数据并进行训练，都有对环境的全局观察，动作空间包含以下四个维度：上移、下移、保持不动以及击球（或称为开始游戏）。具体奖励函数设计如下：</p>
+<ul>
+<li>完全协作环境：一方失球，则两方均获得 -1 的回报</li>
+<li>完全竞争环境：一方失球，该方获得 -1 的回报；对方获得 +1 的回报</li>
+<li>非完全协作&#x2F;竞争环境：一方失球，该方获得 -1 的回报；对方获得 的回报</li>
+</ul>
+<p>最终的实验结果表明，在完全协作环境中，智能体学到的策略是尽可能长时间的不失球；而在完全竞争环境中，智能体学到的是如何更好的得分（即让对方失球）。而从合作到竞争之间的差距只是奖励函数的定义变更</p>
+<h3 id="中心性"><a href="#中心性" class="headerlink" title="- 中心性"></a>- 中心性</h3><p>从单智能体强化学习迁移到多智能体强化学习，自然地诞生了一个问题————多个智能体之间是否会共享&#x2F;交流它们的策略，这可以分为典型的三类算法：  </p>
+<ol>
+<li>完全去中心化<br>完全去中心化算法可以理解为直接将单智能体算法应用在多智能体问题上，即多个智能体之间完全不进行交流，单个智能体将其他智能体视为环境的一部分并进行训练，但这种算法打破了环境的稳定性（相同的状态下采取相同的动作会导向不同的结果），这是由于环境中其他智能体也在进行学习。因而这种算法在复杂的多智能体情景下表现不佳</li>
+<li>完全中心化<br>完全中心化算法可以理解为有一个超级智能体收集环境中的所有智能体的信息并为他们做决策，这保证了环境的稳定性，但这种算法的复杂度是相当高的（假设有10个智能体，每个智能体有4个动作空间，那总的动作空间是4^10），与环境实时的交互几乎是不可能的，且这种算法可拓展性很差，因为但凡为环境中添加一个智能体，那网络的维度会全部改变，必须重新训练</li>
+<li>中心化训练去中心化执行<br>在CTDE(Centerized Training Decenterized Executing)算法下，每个智能体有自己的策略网络，但价值网络是中心化的。可以理解为在打训练赛时有教练观察全场的局势并指挥每个球员下一步该怎么做，而踢比赛时每个球员只根据训练时的习惯和当前自己的观察去做决定<br><img src="/images/MARL/CTDE.png" alt="CTDE"></li>
+</ol>
+<h3 id="主要环境和场景"><a href="#主要环境和场景" class="headerlink" title="- 主要环境和场景"></a>- 主要环境和场景</h3><p>典型的测试环境：</p>
+<ul>
+<li>StarCraft Multi-Agent Challenge (SMAC)：一个基于著名游戏《星际争霸II》的测试环境，用于评估多智能体协作策略。</li>
+<li>Multi-Agent Particle World (MPE)：一个简化的物理模拟环境，用于研究多智能体的协作和通信。</li>
+<li>Multi-Agent MuJoCo (MAMuJoCo)：基于MuJoCo物理引擎的测试环境，用于评估多智能体在复杂物理任务中的协作。</li>
+<li>Google Research Football：一个模拟足球游戏环境，用于研究多智能体之间的策略和协作。</li>
+<li>Flatland：一个用于研究多智能体路径规划和调度的测试环境。</li>
+<li>SMARTS：一个用于自动驾驶研究的多智能体测试环境，模拟了交通网络中的车辆交互。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2024/09/08/MARL/" data-id="cm0tnj80z0000p4k331ibb5pw" data-title="MARL" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2024/09/02/Multi-Agents/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Multi Agents</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/07/">July 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/09/08/MARL/">MARL</a>
+          </li>
+        
+          <li>
+            <a href="/2024/09/02/Multi-Agents/">Multi Agents</a>
+          </li>
+        
+          <li>
+            <a href="/2024/07/28/ROS2-Learning/">ROS2_Learning</a>
+          </li>
+        
+          <li>
+            <a href="/2024/07/28/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
