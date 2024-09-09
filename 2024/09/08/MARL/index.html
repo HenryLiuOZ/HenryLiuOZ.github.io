@@ -17,7 +17,7 @@
 <meta property="og:image" content="http://example.com/images/MARL/cooperate_and_compete.png">
 <meta property="og:image" content="http://example.com/images/MARL/CTDE.png">
 <meta property="article:published_time" content="2024-09-08T09:05:10.000Z">
-<meta property="article:modified_time" content="2024-09-09T09:40:24.402Z">
+<meta property="article:modified_time" content="2024-09-09T09:56:42.534Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/MARL/value_function.png">
@@ -100,9 +100,9 @@
         <p>此博客主要介绍多智能体强化学习算法（MARL）  </p>
 <h2 id="Chapter1：背景与基础知识（强化学习）"><a href="#Chapter1：背景与基础知识（强化学习）" class="headerlink" title="Chapter1：背景与基础知识（强化学习）"></a>Chapter1：背景与基础知识（强化学习）</h2><p>参考：<a target="_blank" rel="noopener" href="https://huggingface.co/learn/deep-rl-course/unit1/what-is-rl">强化学习课程</a><br>单智能体强化学习旨在解决一类称为马尔可夫决策过程 (MDP) 的问题。强化学习的假设是代理能够在一个 <strong>稳定环境</strong> （状态转移概率和奖励函数是恒定的）中通过与环境的交互寻找到特定环境下更有可能最大化奖励的行为。<br>在 MDP 中，单个智能体基于 <strong>当前环境</strong> （马尔可夫性：环境状态转移的概率仅依赖于当前状态和动作）采取某些action并与环境进行交互，这些动作可能会改变环境的状态，并向agent（智能体）反馈奖励r。强化学习算法以最大化预期回报（即在环境中获得的奖励总和）为目标，寻找最优策略π∗(s-&gt;a)<br>强化学习算法中有两种函数：策略函数和价值函数。策略函数是将当前环境映射到动作的函数，描述为a&#x3D;π(s)或π(a|s)；价值函数是从策略和当前状态映射到期望奖励的函数，表示智能体从该状态开始并按照当前策略采取行动可以获得的预期总回报，描述为：</p>
 <p><img src="/images/MARL/value_function.png" alt="value_function"></p>
-<p>注意这里强化学习算法会基于折扣率γ对未来奖励进行加权，这是算法鼓励智能体去获取更唾手可得&#x2F;可预测的奖励<br>强化学习算法还考虑探索和利用的权衡。在强化学习中，策略函数并不总是直接追求最优预期回报，尤其是在学习过程的早期阶段。这是因为价值函数的初始状态通常是不完全的，智能体需要通过探索来发现更好的行为策略。这里可以参考多臂老虎机中的epsilon-Greedy算法  </p>
+<p>注意这里强化学习算法会基于折扣率γ对未来奖励进行加权，这是算法鼓励智能体去获取更唾手可得&#x2F;可预测的奖励<br>强化学习算法还考虑探索和利用的权衡。在强化学习中，策略函数并不总是直接追求最优预期回报，尤其是在学习过程的早期阶段。这是因为价值函数的初始状态通常是不完全的，智能体需要通过探索来发现更好的行为策略。这里可以参考多臂老虎机问题中的epsilon-Greedy算法  </p>
 <hr>
-<p>参考：<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/9922205">多智能体强化学习综述</a><br>在强化学习算法开辟的早期，基于策略的算法和基于价值的算法是分离的，策略梯度方法直接优化参数化策略π并采取更有可能带来高回报的行动；而基于价值的方法先使用参数化的Q网络估计动作的预期回报，然后通过贪心地遵循具有最高估计值的操作来形成策略。<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1707.06347">PPO算法</a>将两种范式结合到了一种actor-critic架构中，该架构使用基于价值的评论家来改进演员（或策略）的更新  </p>
+<p>参考：<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/9922205">多智能体强化学习综述</a><br>在强化学习算法开辟的早期，基于策略的算法和基于价值的算法是分离的，策略梯度方法直接优化参数化策略π并采取更有可能带来高回报的行动；而基于价值的方法先使用参数化的Q网络估计动作的预期回报，然后通过 <em>贪心</em> 地遵循最有价值的操作来形成策略。<br><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1707.06347">PPO算法</a>将两种范式结合到了一种actor-critic架构中，该架构使用基于价值的评论家来改进演员（或策略）的更新。具体地说，actor基于概率选择行为，critic对actor在当前环境下的行为进行打分，然后actor再根据critic的评分优化网络，可以理解为actor-critic架构是用actor网络代替了单一基于价值的方法中 <em>贪心</em> 算法（简单地取最大值）  </p>
 <h2 id="Chapter2：多智能体强化学习中的主要问题"><a href="#Chapter2：多智能体强化学习中的主要问题" class="headerlink" title="Chapter2：多智能体强化学习中的主要问题"></a>Chapter2：多智能体强化学习中的主要问题</h2><p>参考：<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/9922205">多智能体强化学习综述</a>  </p>
 <h3 id="合作与竞争"><a href="#合作与竞争" class="headerlink" title="- 合作与竞争"></a>- 合作与竞争</h3><p>MARL 环境之间的一个重要区别是每个代理的目标如何相互关联。这可以分为完全合作、完全竞争和混合合作竞争<br>在合作环境中，所有代理都致力于实现一个共同的目标。例如，所有代理都希望完好无损地到达目的地。通常，所有代理共享一个共同的奖励函数；相比之下，竞争性环境（例如纸牌或棋盘游戏）通常被建模为零和马尔可夫博弈，其中所有智能体的收益总和为零。混合环境结合了使用总和收益的合作和竞争智能体。例如，在团队游戏中，智能体必须与队友合作，同时与对方团队竞争。<br><a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/abs/pii/S1389041701000158">Littmann等学者</a>指出，在竞争性环境中，与任意对手的竞争并从中学习是可保证的，而在合作环境中，必须做出强有力的假设来保证收敛  </p>
 <hr>
