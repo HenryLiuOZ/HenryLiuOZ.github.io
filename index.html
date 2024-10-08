@@ -92,15 +92,23 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <p>此博客主要介绍多智能体强化学习算法（MARL）  </p>
-<h2 id="Chapter1：背景与基础知识（强化学习）"><a href="#Chapter1：背景与基础知识（强化学习）" class="headerlink" title="Chapter1：背景与基础知识（强化学习）"></a>Chapter1：背景与基础知识（强化学习）</h2><p>参考：<a target="_blank" rel="noopener" href="https://huggingface.co/learn/deep-rl-course/unit1/what-is-rl">强化学习课程</a><br>单智能体强化学习旨在解决一类称为马尔可夫决策过程 (MDP) 的问题。强化学习的假设是代理能够在一个 <strong>稳定环境</strong> （状态转移概率和奖励函数是恒定的）中通过与环境的交互寻找到特定环境下更有可能最大化奖励的行为。<br>在 MDP 中，单个智能体基于 <strong>当前环境</strong> （马尔可夫性：环境状态转移的概率仅依赖于当前状态和动作）采取某些action并与环境进行交互，这些动作可能会改变环境的状态，并向agent（智能体）反馈奖励r。强化学习算法以最大化预期回报（即在环境中获得的奖励总和）为目标，寻找最优策略π∗(s-&gt;a)<br>强化学习算法中有两种函数：策略函数和价值函数。策略函数是将当前环境映射到动作的函数，描述为a&#x3D;π(s)或π(a|s)；价值函数是从策略和当前状态映射到期望奖励的函数，表示智能体从该状态开始并按照当前策略采取行动可以获得的预期总回报，描述为：</p>
-<p><img src="/images/MARL/value_function.png" alt="value_function"></p>
-<p>注意这里强化学习算法会基于折扣率γ对未来奖励进行加权，这是算法鼓励智能体去获取更唾手可得&#x2F;可预测的奖励<br>强化学习算法还考虑探索和利用的权衡。在强化学习中，策略函数并不总是直接追求最优预期回报，尤其是在学习过程的早期阶段。这是因为价值函数的初始状态通常是不完全的，智能体需要通过探索来发现更好的行为策略。这里可以参考多臂老虎机问题中的epsilon-Greedy算法  </p>
+<h2 id="Chapter1：背景与基础知识（强化学习）"><a href="#Chapter1：背景与基础知识（强化学习）" class="headerlink" title="Chapter1：背景与基础知识（强化学习）"></a>Chapter1：背景与基础知识（强化学习）</h2><p>参考：<a target="_blank" rel="noopener" href="https://huggingface.co/learn/deep-rl-course/unit1/what-is-rl">huggingface</a><br><a target="_blank" rel="noopener" href="https://github.com/MathFoundationRL/Book-Mathmatical-Foundation-of-Reinforcement-Learning">WindyLab</a></p>
+<p>单智能体强化学习旨在解决一类马尔可夫决策过程 (马尔可夫性：环境状态转移的概率仅依赖于当前状态和动作) 的问题。强化学习的假设是代理能够在一个静态环境 <em>environment with stationary distribution</em> （状态转移概率和奖励函数是恒定的）中通过与环境的交互寻找最大化奖励的行为。<br>在单智能体强化学习中，智能体基于 <strong>当前环境</strong> 采取某些action并与环境进行交互，这些动作可能会改变环境的状态，环境根据人为定义的奖励函数向智能体反馈奖励r。强化学习算法以优化到 <strong>贝尔曼最优公式</strong> 为目标，寻找最优策略π∗(a|s)  </p>
 <hr>
-<p>参考：<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/9922205">多智能体强化学习综述</a><br>在强化学习算法开辟的早期，基于策略的算法和基于价值的算法是分离的，策略梯度方法直接优化参数化策略π并采取更有可能带来高回报的行动；而基于价值的方法先使用参数化的Q网络估计动作的预期回报，然后通过 <em>贪心</em> 地遵循最有价值的操作来形成策略。<br><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1707.06347">PPO算法</a>将两种范式结合到了一种actor-critic架构中，该架构使用基于价值的评论家来改进演员（或策略）的更新。具体地说，actor基于概率选择行为，critic对actor在当前环境下的行为进行打分，然后actor再根据critic的评分优化网络，可以理解为actor-critic架构是用actor网络代替了单一基于价值的方法中 <em>贪心</em> 算法（简单地取最大值）  </p>
+<p>基本概念：</p>
+<ul>
+<li>state transition probability: $p(s’|s,a)$</li>
+<li>reward function: $r(s,a)$</li>
+<li>policy function: $\pi(a|s)$, the only variable while training</li>
+<li>state value:<br>$v_{\pi}(s)&#x3D;E[\sum_{t&#x3D;0}^{\infty} \gamma^{t}R_{t+1}|S_t&#x3D;s]$<br>$R_{t+1}$ is the immediate reward following current policy<br>matrix form: $v_{\pi}&#x3D;r_{\pi}+\gamma P_{\pi}v_{\pi}$</li>
+<li>action value: $v_{\pi}(s)&#x3D;\sum_a \pi(a|s)q_{\pi}(s)$</li>
+<li>Bellman equation: $v_{\pi}(s)&#x3D;\sum_a \pi(a|s)(\sum_r p(r|s,a)*r+\sum_{s’}p(s’|s,a)v_{\pi}(s’))$<br>matrix form: $v_{\pi}&#x3D;r_{\pi}+\gamma P_{\pi}v_{\pi}$</li>
+<li>Bellman Optimal Equation: for any policy $\pi$ and state s, $v_{\pi*}(s)\geq v_{\pi}(s)$<br>matrix form: $v&#x3D;f(v)&#x3D;{max}<em>{\pi}$ $(r</em>{\pi}+\gamma v)$</li>
+</ul>
+<hr>
+<p>经典算法：</p>
 <h2 id="Chapter2：多智能体强化学习中的主要问题"><a href="#Chapter2：多智能体强化学习中的主要问题" class="headerlink" title="Chapter2：多智能体强化学习中的主要问题"></a>Chapter2：多智能体强化学习中的主要问题</h2><p>参考：<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/9922205">多智能体强化学习综述</a>  </p>
-<h3 id="合作与竞争"><a href="#合作与竞争" class="headerlink" title="- 合作与竞争"></a>- 合作与竞争</h3><p>MARL 环境之间的一个重要区别是每个代理的目标如何相互关联。这可以分为完全合作、完全竞争和混合合作竞争<br>在合作环境中，所有代理都致力于实现一个共同的目标。例如，所有代理都希望完好无损地到达目的地。通常，所有代理共享一个共同的奖励函数；相比之下，竞争性环境（例如纸牌或棋盘游戏）通常被建模为零和马尔可夫博弈，其中所有智能体的收益总和为零。混合环境结合了使用总和收益的合作和竞争智能体。例如，在团队游戏中，智能体必须与队友合作，同时与对方团队竞争。<br><a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/abs/pii/S1389041701000158">Littmann等学者</a>指出，在竞争性环境中，与任意对手的竞争并从中学习是可保证的，而在合作环境中，必须做出强有力的假设来保证收敛  </p>
-<hr>
-<p><em><strong>from cooperate to compete, how far?</strong></em></p>
+<h3 id="合作与竞争"><a href="#合作与竞争" class="headerlink" title="- 合作与竞争"></a>- 合作与竞争</h3><p><em><strong>from cooperate to compete, how far?</strong></em></p>
 <p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1511.08779">Multiagent Cooperation and Competition with Deep Reinforcement Learning</a>是一篇早期的单智能体强化学习行为分析文章，这篇文章首次将 DQN 算法与 IQL 结合起来，并将其应用到 ALE 环境中的乒乓游戏中  </p>
 <p><img src="/images/MARL/cooperate_and_compete.png" alt="cooperate_and_compete"></p>
 <p>在这样一个环境中，每个智能体拥有独立的 Q network，独自采集数据并进行训练，都有对环境的全局观察，动作空间包含以下四个维度：上移、下移、保持不动以及击球（或称为开始游戏）。具体奖励函数设计如下：</p>
@@ -216,7 +224,30 @@
 <p>现在可以分别控制两个机器人，并在rviz中正确显示了（每个机器人的link&#x2F;joint&#x2F;robot_description&#x2F;控制接口都具有命名空间前缀）<br><img src="/images/Multi-Agents/valid_two_robots.png" alt="valid_two_robots"></p>
 <hr>
 <p>注意这一行：<code>params = &#123;&#39;robot_description&#39;: robot_description_config.toxml(), &#39;use_sim_time&#39;: True&#125;</code><br>如果不设置’use_sim_time’（默认为false），gazebo插件会默认使用系统时间，并根据自己的timer发布数据，在多个插件存在时这会导致不同插件发布消息的时间不一致。<br>在rviz中的体现是“no transform from front_left_wheel to odom”报错，无法显示机器人的四个轮子，我的理解是不使用simulation time导致joint_state_publisher发布的轮轴的tf关系与robot_state_publisher发布的其他关节的tf信息没有对其，导致robot_description不完整（缺少轮轴的tf关系）  </p>
+<h2 id="Chapter2：Unity与ML-agents"><a href="#Chapter2：Unity与ML-agents" class="headerlink" title="Chapter2：Unity与ML-agents"></a>Chapter2：Unity与ML-agents</h2><h3 id="下载与环境配置"><a href="#下载与环境配置" class="headerlink" title="- 下载与环境配置"></a>- 下载与环境配置</h3><p>Date:2024&#x2F;9&#x2F;23，在写这篇博客的时候，<a target="_blank" rel="noopener" href="https://github.com/Unity-Technologies/ml-agents/blob/develop/docs/Installation.md">ML-agents github</a>忽然更新到了branch-21，ml-agents&#x3D;&#x3D;1.0.0。<br>最新版本的下载教程所提供的环境是正确的，不需要重新配置环境，可以直接使用，不过ml-agents1.0使用的Unity包是预发行的非稳定版本；branch-20，ml-agents&#x3D;&#x3D;0.30.0的环境错误很多，不过使用的Unity包都是长期稳定版本。<br>首先在官网下载<a target="_blank" rel="noopener" href="https://unity.com/cn/download">UnityHub</a>，<a target="_blank" rel="noopener" href="https://www.anaconda.com/download">anaconda</a>，使用C#还需要下载<a target="_blank" rel="noopener" href="https://dotnet.microsoft.com/en-us/download">.NET SDK</a><br>目前建议直接 <strong>下载最新版本</strong>，在<a target="_blank" rel="noopener" href="https://github.com/Unity-Technologies/ml-agents/blob/develop/docs/Installation.md">ML-agents github</a>跟着教程直接下载<br><em>下面是ml-agents&#x3D;&#x3D;0.30.0的环境配置</em>：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#create a new environment</span><br><span class="line">conda create -n unity_rl python=3.10.0 &amp;&amp; conda activate mlagents</span><br><span class="line">#install ml-agents clones for models and projects</span><br><span class="line">git clone --branch release_20 https://github.com/Unity-Technologies/ml-agents.git</span><br><span class="line">#install ml-agents</span><br><span class="line">python -m pip install mlagents==0.30.0</span><br><span class="line">#need to Downgrade protobuf</span><br><span class="line">pip uninstall protobuf</span><br><span class="line">pip install protobuf==3.20.0</span><br><span class="line">#you might need to install six</span><br><span class="line">pip install six</span><br><span class="line">#default torch installation is not cannot compute for RTX3060(sm86)</span><br><span class="line">pip uninstall torch</span><br><span class="line">conda install pytorch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit=11.3 -c pytorch</span><br><span class="line"># numpy&#x27; has no attribute &#x27;float&#x27;. `np.float` was a deprecated alias for the builtin `float` ...</span><br><span class="line">cd path-to-buffer.py &amp; change line210 np.float to float</span><br><span class="line"># Could not infer dtype of numpy.float32&quot; When trying to learn ml-agents</span><br><span class="line">pip uninstall numpy</span><br><span class="line">pip install numpy==1.22.0</span><br><span class="line"># this will raise an error &#x27;mlagents-envs requires numpy==1.21.2&#x27;, just ignore it</span><br></pre></td></tr></table></figure>
 
+<p><a href="https://'earn.unity.com/tutorial/install-unity-software">Unity基本使用</a><br>跟随<a target="_blank" rel="noopener" href="https://github.com/Unity-Technologies/ml-agents/blob/develop/docs/Getting-Started.md">官方教程</a>创建代理环境并训练mlagents</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ml-agents</span><br><span class="line">mlagents-learn config/ppo/3DBall.yaml --run-id=first3DBallRun</span><br></pre></td></tr></table></figure>
+
+<h3 id="复用SoccerTwo环境"><a href="#复用SoccerTwo环境" class="headerlink" title="- 复用SoccerTwo环境"></a>- 复用SoccerTwo环境</h3><ol>
+<li>在UnityHub中New Project新建一个项目，将Editor Version改为2023.2.13f1</li>
+<li>复制ml-agents&#x2F;Project&#x2F;ML-Agents&#x2F;Examples&#x2F;Soccer文件夹到新建项目的Assets文件夹下</li>
+<li>将新建项目的Packages文件夹替换为ml-agents&#x2F;Project&#x2F;Packages文件夹</li>
+<li>复制com.unity.ml-agents,com.unity.ml-agents.extensions,ml-agents-trainer-plugin文件夹到你项目的同级目录</li>
+<li>在UnityHub下运行你的项目文件</li>
+</ol>
+<h3 id="ML-Agents代码解析"><a href="#ML-Agents代码解析" class="headerlink" title="- ML-Agents代码解析"></a>- ML-Agents代码解析</h3><p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Packages/com.unity.ml-agents@3.0/api/index.html">官方API库</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/tianjuewudi/article/details/121115480">SoccerTwo代码解析</a></p>
+<h2 id="Chapter3：ML-Agents-FRC"><a href="#Chapter3：ML-Agents-FRC" class="headerlink" title="Chapter3：ML-Agents FRC"></a>Chapter3：ML-Agents FRC</h2><h3 id="FRC比赛规则"><a href="#FRC比赛规则" class="headerlink" title="- FRC比赛规则"></a>- FRC比赛规则</h3><p><img src="/images/Multi-Agents/FRC_field1.png" alt="FRC field1"><br><img src="/images/Multi-Agents/FRC_field2.png" alt="FRC field2"></p>
+<ol>
+<li>场景内允许两只队伍，每队三个机器人在场地内比赛，机器人通过将NOTE投入到 <em>己方场地内的</em> Speaker中以得分</li>
+<li>比赛前15秒，机器人处于自动阶段，按照预先设定的程序得分；在剩下的2分15秒内，操作手控制自己的机器人。机器人从Source处收集来NOTEs，并送入Speaker和<br>AMP中得分。每当一个队伍在其AMP中积累2个音符，操作者可以决定激活 <em>放大状态</em> 的时间。在放大状态的10秒内投入Speaker可以获得更高得分</li>
+<li>如果双方队伍都在手动阶段的前45秒内按下 <em>合作竞争按钮</em> 重新利用一个音符（将投入AMP的NOTE取出用于得分），那么比赛中的所有队伍都会获得1个合作竞争分（这会影响他们在比赛中的排名），同时旋律奖励（一种得分成就，当一个队伍在扩音器和扬声器中积累了一定数量的音符时，可以获得额外的分数）所需的音符数量也会减少</li>
+<li>机器人被允许跨过半场以干扰对手的得分（如争夺对方的NOTE，迫使对方犯规等），并可以与对手发生接触（但接触时间需要小于5秒）</li>
+</ol>
+<p><img src="/images/Multi-Agents/scoring_rules.png" alt="scoring rules"></p>
+<h3 id="FRC公开论坛、咨询与仿真"><a href="#FRC公开论坛、咨询与仿真" class="headerlink" title="- FRC公开论坛、咨询与仿真"></a>- FRC公开论坛、咨询与仿真</h3><p><a target="_blank" rel="noopener" href="https://www.chiefdelphi.com/c/first/open-alliance/89">开源的FRC联盟</a><br>比赛录像可以从youtube上直接搜索FRC event review<br><a target="_blank" rel="noopener" href="https://mostudios.itch.io/mosimulator">MoSimulator</a>使用Unity制作了FRC游戏模拟<br><a target="_blank" rel="noopener" href="https://www.chiefdelphi.com/t/6328s-advance-swerve-drive-example-with-more-enhanced-physics-simulation-collision-detection-and-more/470626/3">Maple-Swerve-Skeleton</a>集成了碰撞模拟，驾驶模拟，游戏道具模拟，<em>里程计模拟（打滑）</em> 与 <em>视觉模拟</em></p>
+<h3 id="my-AgentFRC-simple"><a href="#my-AgentFRC-simple" class="headerlink" title="- my AgentFRC simple"></a>- my AgentFRC simple</h3>
       
     </div>
     <footer class="article-footer">

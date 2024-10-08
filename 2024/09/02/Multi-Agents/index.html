@@ -16,8 +16,11 @@
 <meta property="og:image" content="http://example.com/images/Multi-Agents/two_robots.png">
 <meta property="og:image" content="http://example.com/images/Multi-Agents/failure_ns.png">
 <meta property="og:image" content="http://example.com/images/Multi-Agents/valid_two_robots.png">
+<meta property="og:image" content="http://example.com/images/Multi-Agents/FRC_field1.png">
+<meta property="og:image" content="http://example.com/images/Multi-Agents/FRC_field2.png">
+<meta property="og:image" content="http://example.com/images/Multi-Agents/scoring_rules.png">
 <meta property="article:published_time" content="2024-09-02T05:51:46.000Z">
-<meta property="article:modified_time" content="2024-09-04T06:07:17.941Z">
+<meta property="article:modified_time" content="2024-10-08T11:07:32.337Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/Multi-Agents/two_robots.png">
@@ -150,7 +153,30 @@
 <p>现在可以分别控制两个机器人，并在rviz中正确显示了（每个机器人的link&#x2F;joint&#x2F;robot_description&#x2F;控制接口都具有命名空间前缀）<br><img src="/images/Multi-Agents/valid_two_robots.png" alt="valid_two_robots"></p>
 <hr>
 <p>注意这一行：<code>params = &#123;&#39;robot_description&#39;: robot_description_config.toxml(), &#39;use_sim_time&#39;: True&#125;</code><br>如果不设置’use_sim_time’（默认为false），gazebo插件会默认使用系统时间，并根据自己的timer发布数据，在多个插件存在时这会导致不同插件发布消息的时间不一致。<br>在rviz中的体现是“no transform from front_left_wheel to odom”报错，无法显示机器人的四个轮子，我的理解是不使用simulation time导致joint_state_publisher发布的轮轴的tf关系与robot_state_publisher发布的其他关节的tf信息没有对其，导致robot_description不完整（缺少轮轴的tf关系）  </p>
+<h2 id="Chapter2：Unity与ML-agents"><a href="#Chapter2：Unity与ML-agents" class="headerlink" title="Chapter2：Unity与ML-agents"></a>Chapter2：Unity与ML-agents</h2><h3 id="下载与环境配置"><a href="#下载与环境配置" class="headerlink" title="- 下载与环境配置"></a>- 下载与环境配置</h3><p>Date:2024&#x2F;9&#x2F;23，在写这篇博客的时候，<a target="_blank" rel="noopener" href="https://github.com/Unity-Technologies/ml-agents/blob/develop/docs/Installation.md">ML-agents github</a>忽然更新到了branch-21，ml-agents&#x3D;&#x3D;1.0.0。<br>最新版本的下载教程所提供的环境是正确的，不需要重新配置环境，可以直接使用，不过ml-agents1.0使用的Unity包是预发行的非稳定版本；branch-20，ml-agents&#x3D;&#x3D;0.30.0的环境错误很多，不过使用的Unity包都是长期稳定版本。<br>首先在官网下载<a target="_blank" rel="noopener" href="https://unity.com/cn/download">UnityHub</a>，<a target="_blank" rel="noopener" href="https://www.anaconda.com/download">anaconda</a>，使用C#还需要下载<a target="_blank" rel="noopener" href="https://dotnet.microsoft.com/en-us/download">.NET SDK</a><br>目前建议直接 <strong>下载最新版本</strong>，在<a target="_blank" rel="noopener" href="https://github.com/Unity-Technologies/ml-agents/blob/develop/docs/Installation.md">ML-agents github</a>跟着教程直接下载<br><em>下面是ml-agents&#x3D;&#x3D;0.30.0的环境配置</em>：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#create a new environment</span><br><span class="line">conda create -n unity_rl python=3.10.0 &amp;&amp; conda activate mlagents</span><br><span class="line">#install ml-agents clones for models and projects</span><br><span class="line">git clone --branch release_20 https://github.com/Unity-Technologies/ml-agents.git</span><br><span class="line">#install ml-agents</span><br><span class="line">python -m pip install mlagents==0.30.0</span><br><span class="line">#need to Downgrade protobuf</span><br><span class="line">pip uninstall protobuf</span><br><span class="line">pip install protobuf==3.20.0</span><br><span class="line">#you might need to install six</span><br><span class="line">pip install six</span><br><span class="line">#default torch installation is not cannot compute for RTX3060(sm86)</span><br><span class="line">pip uninstall torch</span><br><span class="line">conda install pytorch==1.11.0 torchvision==0.12.0 torchaudio==0.11.0 cudatoolkit=11.3 -c pytorch</span><br><span class="line"># numpy&#x27; has no attribute &#x27;float&#x27;. `np.float` was a deprecated alias for the builtin `float` ...</span><br><span class="line">cd path-to-buffer.py &amp; change line210 np.float to float</span><br><span class="line"># Could not infer dtype of numpy.float32&quot; When trying to learn ml-agents</span><br><span class="line">pip uninstall numpy</span><br><span class="line">pip install numpy==1.22.0</span><br><span class="line"># this will raise an error &#x27;mlagents-envs requires numpy==1.21.2&#x27;, just ignore it</span><br></pre></td></tr></table></figure>
 
+<p><a href="https://'earn.unity.com/tutorial/install-unity-software">Unity基本使用</a><br>跟随<a target="_blank" rel="noopener" href="https://github.com/Unity-Technologies/ml-agents/blob/develop/docs/Getting-Started.md">官方教程</a>创建代理环境并训练mlagents</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ml-agents</span><br><span class="line">mlagents-learn config/ppo/3DBall.yaml --run-id=first3DBallRun</span><br></pre></td></tr></table></figure>
+
+<h3 id="复用SoccerTwo环境"><a href="#复用SoccerTwo环境" class="headerlink" title="- 复用SoccerTwo环境"></a>- 复用SoccerTwo环境</h3><ol>
+<li>在UnityHub中New Project新建一个项目，将Editor Version改为2023.2.13f1</li>
+<li>复制ml-agents&#x2F;Project&#x2F;ML-Agents&#x2F;Examples&#x2F;Soccer文件夹到新建项目的Assets文件夹下</li>
+<li>将新建项目的Packages文件夹替换为ml-agents&#x2F;Project&#x2F;Packages文件夹</li>
+<li>复制com.unity.ml-agents,com.unity.ml-agents.extensions,ml-agents-trainer-plugin文件夹到你项目的同级目录</li>
+<li>在UnityHub下运行你的项目文件</li>
+</ol>
+<h3 id="ML-Agents代码解析"><a href="#ML-Agents代码解析" class="headerlink" title="- ML-Agents代码解析"></a>- ML-Agents代码解析</h3><p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Packages/com.unity.ml-agents@3.0/api/index.html">官方API库</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/tianjuewudi/article/details/121115480">SoccerTwo代码解析</a></p>
+<h2 id="Chapter3：ML-Agents-FRC"><a href="#Chapter3：ML-Agents-FRC" class="headerlink" title="Chapter3：ML-Agents FRC"></a>Chapter3：ML-Agents FRC</h2><h3 id="FRC比赛规则"><a href="#FRC比赛规则" class="headerlink" title="- FRC比赛规则"></a>- FRC比赛规则</h3><p><img src="/images/Multi-Agents/FRC_field1.png" alt="FRC field1"><br><img src="/images/Multi-Agents/FRC_field2.png" alt="FRC field2"></p>
+<ol>
+<li>场景内允许两只队伍，每队三个机器人在场地内比赛，机器人通过将NOTE投入到 <em>己方场地内的</em> Speaker中以得分</li>
+<li>比赛前15秒，机器人处于自动阶段，按照预先设定的程序得分；在剩下的2分15秒内，操作手控制自己的机器人。机器人从Source处收集来NOTEs，并送入Speaker和<br>AMP中得分。每当一个队伍在其AMP中积累2个音符，操作者可以决定激活 <em>放大状态</em> 的时间。在放大状态的10秒内投入Speaker可以获得更高得分</li>
+<li>如果双方队伍都在手动阶段的前45秒内按下 <em>合作竞争按钮</em> 重新利用一个音符（将投入AMP的NOTE取出用于得分），那么比赛中的所有队伍都会获得1个合作竞争分（这会影响他们在比赛中的排名），同时旋律奖励（一种得分成就，当一个队伍在扩音器和扬声器中积累了一定数量的音符时，可以获得额外的分数）所需的音符数量也会减少</li>
+<li>机器人被允许跨过半场以干扰对手的得分（如争夺对方的NOTE，迫使对方犯规等），并可以与对手发生接触（但接触时间需要小于5秒）</li>
+</ol>
+<p><img src="/images/Multi-Agents/scoring_rules.png" alt="scoring rules"></p>
+<h3 id="FRC公开论坛、咨询与仿真"><a href="#FRC公开论坛、咨询与仿真" class="headerlink" title="- FRC公开论坛、咨询与仿真"></a>- FRC公开论坛、咨询与仿真</h3><p><a target="_blank" rel="noopener" href="https://www.chiefdelphi.com/c/first/open-alliance/89">开源的FRC联盟</a><br>比赛录像可以从youtube上直接搜索FRC event review<br><a target="_blank" rel="noopener" href="https://mostudios.itch.io/mosimulator">MoSimulator</a>使用Unity制作了FRC游戏模拟<br><a target="_blank" rel="noopener" href="https://www.chiefdelphi.com/t/6328s-advance-swerve-drive-example-with-more-enhanced-physics-simulation-collision-detection-and-more/470626/3">Maple-Swerve-Skeleton</a>集成了碰撞模拟，驾驶模拟，游戏道具模拟，<em>里程计模拟（打滑）</em> 与 <em>视觉模拟</em></p>
+<h3 id="my-AgentFRC-simple"><a href="#my-AgentFRC-simple" class="headerlink" title="- my AgentFRC simple"></a>- my AgentFRC simple</h3>
       
     </div>
     <footer class="article-footer">
