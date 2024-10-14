@@ -19,8 +19,13 @@
 <meta property="og:image" content="http://example.com/images/Multi-Agents/FRC_field1.png">
 <meta property="og:image" content="http://example.com/images/Multi-Agents/FRC_field2.png">
 <meta property="og:image" content="http://example.com/images/Multi-Agents/scoring_rules.png">
+<meta property="og:image" content="http://example.com/images/Multi-Agents/FRCThree_env.png">
+<meta property="og:image" content="http://example.com/images/Multi-Agents/FRC_field.jpg">
+<meta property="og:image" content="http://example.com/images/Multi-Agents/BlueAgent.jpg">
+<meta property="og:image" content="http://example.com/images/Multi-Agents/AMPBlue.jpg">
+<meta property="og:image" content="http://example.com/images/Multi-Agents/500000Training.png">
 <meta property="article:published_time" content="2024-09-02T05:51:46.000Z">
-<meta property="article:modified_time" content="2024-10-08T11:07:32.337Z">
+<meta property="article:modified_time" content="2024-10-14T07:50:09.419Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/Multi-Agents/two_robots.png">
@@ -175,8 +180,20 @@
 <li>机器人被允许跨过半场以干扰对手的得分（如争夺对方的NOTE，迫使对方犯规等），并可以与对手发生接触（但接触时间需要小于5秒）</li>
 </ol>
 <p><img src="/images/Multi-Agents/scoring_rules.png" alt="scoring rules"></p>
-<h3 id="FRC公开论坛、咨询与仿真"><a href="#FRC公开论坛、咨询与仿真" class="headerlink" title="- FRC公开论坛、咨询与仿真"></a>- FRC公开论坛、咨询与仿真</h3><p><a target="_blank" rel="noopener" href="https://www.chiefdelphi.com/c/first/open-alliance/89">开源的FRC联盟</a><br>比赛录像可以从youtube上直接搜索FRC event review<br><a target="_blank" rel="noopener" href="https://mostudios.itch.io/mosimulator">MoSimulator</a>使用Unity制作了FRC游戏模拟<br><a target="_blank" rel="noopener" href="https://www.chiefdelphi.com/t/6328s-advance-swerve-drive-example-with-more-enhanced-physics-simulation-collision-detection-and-more/470626/3">Maple-Swerve-Skeleton</a>集成了碰撞模拟，驾驶模拟，游戏道具模拟，<em>里程计模拟（打滑）</em> 与 <em>视觉模拟</em></p>
-<h3 id="my-AgentFRC-simple"><a href="#my-AgentFRC-simple" class="headerlink" title="- my AgentFRC simple"></a>- my AgentFRC simple</h3>
+<h3 id="FRC公开论坛、咨询与仿真"><a href="#FRC公开论坛、咨询与仿真" class="headerlink" title="- FRC公开论坛、咨询与仿真"></a>- FRC公开论坛、咨询与仿真</h3><p><a target="_blank" rel="noopener" href="https://www.chiefdelphi.com/c/first/open-alliance/89">开源的FRC联盟</a><br>比赛录像可以从youtube上直接搜索FRC event review<br><a target="_blank" rel="noopener" href="https://mostudios.itch.io/mosimulator">MoSimulator</a>使用Unity制作了FRC游戏模拟<br><a target="_blank" rel="noopener" href="https://www.chiefdelphi.com/t/6328s-advance-swerve-drive-example-with-more-enhanced-physics-simulation-collision-detection-and-more/470626/3">Maple-Swerve-Skeleton</a>集成了碰撞模拟，驾驶模拟，游戏道具模拟，<strong>里程计模拟（打滑）</strong> 与 <strong>视觉模拟</strong></p>
+<h3 id="my-AgentFRC-simple"><a href="#my-AgentFRC-simple" class="headerlink" title="- my AgentFRC simple"></a>- my AgentFRC simple</h3><p>Enviroment Design：基于官方文档SoccerTwo环境做出修改。删除场景内的足球，将代理数添加至3v3，仿照FRC比赛场地添加AMP(blue and purple)与Source(yellow)，直接将BlueGoal和PurpleGoal球门视为蓝队和紫队的Speaker。</p>
+<p><img src="/images/Multi-Agents/FRCThree_env.png" alt="FRCThree env"></p>
+<p>Game Design：代理的动作空间仍为3*discrete(前后、左右、水平转动共三维)，代理通过与Source接触获得Notes，并通过与AMP或Speaker接触将Note投入并得分（得分计入各队的 <strong>GroupReward</strong>）。得分规则与GameManual一致：携带Note的代理与己方的AMP接触时团队得分+1，AMP中储存的Note+1，当AMP中已经存储了两个Note并再次与己方的代理接触时，触发<strong>放大时间</strong> （注意在FRC比赛中放大时间是由操作手决定的，可以在任意时间触发，这里通过代理再次触碰的方式实现代理自主决定何时触发放大时间）；携带Note的代理与己方的Speaker接触时团队得分+2，在放大时间内得分+5</p>
+<p>Module Introduction：</p>
+<p>Unity中C#脚本文件下声明为public的变量会显示在UI窗口中，可以通过将Hierarchy窗口下的物体拖动到对应的方框下实现变量赋值</p>
+<ul>
+<li>FRC_field<br><img src="/images/Multi-Agents/FRC_field.jpg" alt="FRC_field"><br>FRCEnvController文件注册了环境中的所有6个代理，用以更新环境计时器并在游戏重新开始时重置代理位置。BlueScore和PurpleScore是我创建的计分板</li>
+<li>BlueAgent<br><img src="/images/Multi-Agents/BlueAgent.jpg" alt="BlueAgent"><br>BehaviourParameters文件是ML-Agents的库文件，它定义了网络的观测空间（输入端）与动作空间（输出端）。VectorObservation下的Space Size需要与对应代理脚本文件中定义的CollectObservation()下的addObservation数目一致，RaySensor等传感器文件获得的观测空间不计入Space Size。注意Behaviour Name需要与trainingconfig.yaml文件中的名称保持一致才能训练</li>
+<li>AMPBlue<br><img src="/images/Multi-Agents/AMPBlue.jpg" alt="AMPBlue"><br>AMPController类内储存了FRCEnv，因为FRCEnv注册了环境中的6个代理，现在AMPController可以通过FRCEnv为代理添加GroupReward<br>AMP的Collider文件下勾选了IsTrigger，现在AMP不会参与物理碰撞（可以直接穿过），含有RigidBody的物体 <em>发生移动</em> 并进入AMP内部，会触发OnTriggerEnter函数，通过这种逻辑判断代理与AMP发生接触</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://github.com/HenryLiuOZ/FRCThree">Code Implementation</a>：包含了我的Script文件，训练好的网络与视频演示</p>
+<p><img src="/images/Multi-Agents/500000Training.png" alt="500000Training"></p>
+
       
     </div>
     <footer class="article-footer">
