@@ -20,12 +20,12 @@
 <meta property="og:image" content="http://example.com/images/Multi-Agents/FRC_field2.png">
 <meta property="og:image" content="http://example.com/images/Multi-Agents/scoring_rules.png">
 <meta property="og:image" content="http://example.com/images/Multi-Agents/FRCThree_env.png">
-<meta property="og:image" content="http://example.com/images/Multi-Agents/FRC_field.jpg">
+<meta property="og:image" content="http://example.com/images/Multi-Agents/m_FRC_field.jpg">
 <meta property="og:image" content="http://example.com/images/Multi-Agents/BlueAgent.jpg">
 <meta property="og:image" content="http://example.com/images/Multi-Agents/AMPBlue.jpg">
 <meta property="og:image" content="http://example.com/images/Multi-Agents/500000Training.png">
 <meta property="article:published_time" content="2024-09-02T05:51:46.000Z">
-<meta property="article:modified_time" content="2024-10-14T07:50:09.419Z">
+<meta property="article:modified_time" content="2024-10-28T10:06:22.573Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/Multi-Agents/two_robots.png">
@@ -172,7 +172,7 @@
 <li>在UnityHub下运行你的项目文件</li>
 </ol>
 <h3 id="ML-Agents代码解析"><a href="#ML-Agents代码解析" class="headerlink" title="- ML-Agents代码解析"></a>- ML-Agents代码解析</h3><p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Packages/com.unity.ml-agents@3.0/api/index.html">官方API库</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/tianjuewudi/article/details/121115480">SoccerTwo代码解析</a></p>
-<h2 id="Chapter3：ML-Agents-FRC"><a href="#Chapter3：ML-Agents-FRC" class="headerlink" title="Chapter3：ML-Agents FRC"></a>Chapter3：ML-Agents FRC</h2><h3 id="FRC比赛规则"><a href="#FRC比赛规则" class="headerlink" title="- FRC比赛规则"></a>- FRC比赛规则</h3><p><img src="/images/Multi-Agents/FRC_field1.png" alt="FRC field1"><br><img src="/images/Multi-Agents/FRC_field2.png" alt="FRC field2"></p>
+<h2 id="Chapter3：FRC-Three-simple"><a href="#Chapter3：FRC-Three-simple" class="headerlink" title="Chapter3：FRC Three simple"></a>Chapter3：FRC Three simple</h2><h3 id="FRC比赛规则"><a href="#FRC比赛规则" class="headerlink" title="- FRC比赛规则"></a>- FRC比赛规则</h3><p><img src="/images/Multi-Agents/FRC_field1.png" alt="FRC field1"><br><img src="/images/Multi-Agents/FRC_field2.png" alt="FRC field2"></p>
 <ol>
 <li>场景内允许两只队伍，每队三个机器人在场地内比赛，机器人通过将NOTE投入到 <em>己方场地内的</em> Speaker中以得分</li>
 <li>比赛前15秒，机器人处于自动阶段，按照预先设定的程序得分；在剩下的2分15秒内，操作手控制自己的机器人。机器人从Source处收集来NOTEs，并送入Speaker和<br>AMP中得分。每当一个队伍在其AMP中积累2个音符，操作者可以决定激活 <em>放大状态</em> 的时间。在放大状态的10秒内投入Speaker可以获得更高得分</li>
@@ -187,12 +187,18 @@
 <p>Module Introduction：</p>
 <p>Unity中C#脚本文件下声明为public的变量会显示在UI窗口中，可以通过将Hierarchy窗口下的物体拖动到对应的方框下实现变量赋值</p>
 <ul>
-<li>FRC_field<br><img src="/images/Multi-Agents/FRC_field.jpg" alt="FRC_field"><br>FRCEnvController文件注册了环境中的所有6个代理，用以更新环境计时器并在游戏重新开始时重置代理位置。BlueScore和PurpleScore是我创建的计分板</li>
+<li>FRC_field<br><img src="/images/Multi-Agents/m_FRC_field.jpg" alt="my FRC field"><br>FRCEnvController文件注册了环境中的所有6个代理，用以更新环境计时器并在游戏重新开始时重置代理位置。BlueScore和PurpleScore是我创建的计分板</li>
 <li>BlueAgent<br><img src="/images/Multi-Agents/BlueAgent.jpg" alt="BlueAgent"><br>BehaviourParameters文件是ML-Agents的库文件，它定义了网络的观测空间（输入端）与动作空间（输出端）。VectorObservation下的Space Size需要与对应代理脚本文件中定义的CollectObservation()下的addObservation数目一致，RaySensor等传感器文件获得的观测空间不计入Space Size。注意Behaviour Name需要与trainingconfig.yaml文件中的名称保持一致才能训练</li>
 <li>AMPBlue<br><img src="/images/Multi-Agents/AMPBlue.jpg" alt="AMPBlue"><br>AMPController类内储存了FRCEnv，因为FRCEnv注册了环境中的6个代理，现在AMPController可以通过FRCEnv为代理添加GroupReward<br>AMP的Collider文件下勾选了IsTrigger，现在AMP不会参与物理碰撞（可以直接穿过），含有RigidBody的物体 <em>发生移动</em> 并进入AMP内部，会触发OnTriggerEnter函数，通过这种逻辑判断代理与AMP发生接触</li>
 </ul>
 <p><a target="_blank" rel="noopener" href="https://github.com/HenryLiuOZ/FRCThree">Code Implementation</a>：包含了我的Script文件，训练好的网络与视频演示</p>
 <p><img src="/images/Multi-Agents/500000Training.png" alt="500000Training"></p>
+<h2 id="Chapter4：Mosimulator-FRC-field"><a href="#Chapter4：Mosimulator-FRC-field" class="headerlink" title="Chapter4：Mosimulator FRC field"></a>Chapter4：Mosimulator FRC field</h2><p>成功将<a target="_blank" rel="noopener" href="https://mostudios.itch.io/mosimulator">MoSimulator</a>部署在本地</p>
+<p>后续工作：</p>
+<ol>
+<li>为游戏场景添加代理，通过OnActionsReceived函数代替游戏的键盘输入，实现一个端到端的多智能体3v3场景</li>
+<li>为代理添加视觉-位置推断层与对端到端的网络做任务分割以及尝试模仿学习</li>
+</ol>
 
       
     </div>
