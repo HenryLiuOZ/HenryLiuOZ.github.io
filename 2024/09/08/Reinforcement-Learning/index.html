@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Reinforcement Learning | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="此博客主要介绍强化学习算法，相关论文也会放在里面 Chapter1：强化学习背景与基础知识参考：huggingfaceWindyLab 单智能体强化学习旨在解决一类马尔可夫决策过程 (马尔可夫性：环境状态转移的概率仅依赖于当前状态和动作) 的问题。强化学习的假设是代理能够在一个静态环境 environment with stationary distribution （状态转移概率和奖励函数是恒定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Reinforcement Learning">
+<meta property="og:url" content="http://example.com/2024/09/08/Reinforcement-Learning/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="此博客主要介绍强化学习算法，相关论文也会放在里面 Chapter1：强化学习背景与基础知识参考：huggingfaceWindyLab 单智能体强化学习旨在解决一类马尔可夫决策过程 (马尔可夫性：环境状态转移的概率仅依赖于当前状态和动作) 的问题。强化学习的假设是代理能够在一个静态环境 environment with stationary distribution （状态转移概率和奖励函数是恒定">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/MARL/Rint_define.png">
+<meta property="og:image" content="http://example.com/images/MARL/ELLMprocess.png">
+<meta property="og:image" content="http://example.com/images/Multi-Agents/Eureka1.png">
+<meta property="article:published_time" content="2024-09-08T09:05:10.000Z">
+<meta property="article:modified_time" content="2024-12-01T09:53:35.790Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/MARL/Rint_define.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Reinforcement-Learning" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/09/08/Reinforcement-Learning/" class="article-date">
+  <time class="dt-published" datetime="2024-09-08T09:05:10.000Z" itemprop="datePublished">2024-09-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Reinforcement Learning
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>此博客主要介绍强化学习算法，相关论文也会放在里面</p>
+<h2 id="Chapter1：强化学习背景与基础知识"><a href="#Chapter1：强化学习背景与基础知识" class="headerlink" title="Chapter1：强化学习背景与基础知识"></a>Chapter1：强化学习背景与基础知识</h2><p>参考：<a target="_blank" rel="noopener" href="https://huggingface.co/learn/deep-rl-course/unit1/what-is-rl">huggingface</a><br><a target="_blank" rel="noopener" href="https://github.com/MathFoundationRL/Book-Mathmatical-Foundation-of-Reinforcement-Learning">WindyLab</a></p>
+<p>单智能体强化学习旨在解决一类马尔可夫决策过程 (马尔可夫性：环境状态转移的概率仅依赖于当前状态和动作) 的问题。强化学习的假设是代理能够在一个静态环境 <em>environment with stationary distribution</em> （状态转移概率和奖励函数是恒定的）中通过与环境的交互寻找最大化奖励的行为。<br>在单智能体强化学习中，智能体基于 <strong>当前环境</strong> 采取某些action并与环境进行交互，这些动作可能会改变环境的状态，环境根据人为定义的奖励函数向智能体反馈奖励r。强化学习算法以优化到 <strong>贝尔曼最优公式</strong> 为目标，寻找最优策略π∗(a|s)  </p>
+<hr>
+<p>基本概念：</p>
+<ul>
+<li>state transition probability: $p(s’|s,a)$</li>
+<li>reward function: $r(s,a)$</li>
+<li>policy function: $\pi(a|s)$, the only variable while training</li>
+<li>state value:<br>$v_{\pi}(s)&#x3D;E[\sum_{t&#x3D;0}^{\infty} \gamma^{t}R_{t+1}|S_t&#x3D;s]$<br>$R_{t+1}$ is the immediate reward following current policy<br>matrix form: $v_{\pi}&#x3D;r_{\pi}+\gamma P_{\pi}v_{\pi}$</li>
+<li>action value: $v_{\pi}(s)&#x3D;\sum_a \pi(a|s)q_{\pi}(s)$</li>
+<li>Bellman equation: $v_{\pi}(s)&#x3D;\sum_a \pi(a|s)(\sum_r p(r|s,a)*r+\sum_{s’}p(s’|s,a)v_{\pi}(s’))$<br>matrix form: $v_{\pi}&#x3D;r_{\pi}+\gamma P_{\pi}v_{\pi}$</li>
+<li>Bellman Optimal Equation: for any policy $\pi$ and state s, $v_{\pi*}(s)\geq v_{\pi}(s)$<br>matrix form: $v&#x3D;f(v)&#x3D;{max}<em>{\pi}$ $(r</em>{\pi}+\gamma v)$</li>
+</ul>
+<hr>
+<p><a target="_blank" rel="noopener" href="https://github.com/HenryLiuOZ/Reinforcement-Learning-Notes">my RL notes</a></p>
+<h2 id="Chapter2：内在动机强化学习算法（IMRL）"><a href="#Chapter2：内在动机强化学习算法（IMRL）" class="headerlink" title="Chapter2：内在动机强化学习算法（IMRL）"></a>Chapter2：内在动机强化学习算法（IMRL）</h2><p><a target="_blank" rel="noopener" href="https://github.com/yuqingd/ellm?tab=readme-ov-file">Guiding Pretraining in Reinforcement Learning with Large Language Models</a></p>
+<p>实际问题：”When reward functions are sparse, agents often need to carry out a long, specific sequence of actions to achieve target tasks. As action spaces or target behaviors grow more complex, the space of alternative action sequences agents can explore grows combnatorially. In such scenarios, undirected exploration that randomly perturbs actions or policy parameters has littlechance of succeeding” 代理在奖励稀疏环境中训练困难，人为设计频繁精细的奖励费时费力</p>
+<p>初步解决-IMRL：”Many distinct action sequences can lead to similar outcomes (Baranes &amp; Oudeyer, 2013)—for example, most action sequences cause a humanoid agent to fall, while very few make it walk. Building on this observation, intrinsically motivated RL algorithms (IM-RL) choose to explore outcomes rather than actions” IMRL基于新颖的行为结果为代理提供内在奖励从而促使代理做出不同的探索。而仅仅是探索更新奇的状态可能会促使代理沉浸在与最终目标无关的行为中。Competence-based Intrinsic Motivation基于评估代理 <em>掌握新的技能</em> 给出奖励<br>“The approach we introduce in this paper, ELLM, may be interpreted as a CB-IM algorithm that seeks to explore the space of possible and plausibly useful skills informed by human prior knowledge.”</p>
+<h3 id="CB-IM"><a href="#CB-IM" class="headerlink" title="CB-IM"></a>CB-IM</h3><p>“A CB-IM agent is expected to perform well with respect to the original R when the intrinsic reward <strong>Rint(o,a,o’|g)</strong> is both easier to optimize and well aligned with R, such that behaviors maximizing Rint also maximize R.” 这个Rint和goal需要手动设计 “Most CB-IM algorithms hand-define the reward functions Rint and the support of the goal distribution in alignment with the original task R, but use various intrinsic motivations to guide goal sampling (1): e.g.novelty, learning progress, intermediate difficulty” 而ELLM使用大语言模型自动生成目标并评估代理行为</p>
+<h3 id="ELLM"><a href="#ELLM" class="headerlink" title="ELLM"></a>ELLM</h3><p><img src="/images/MARL/Rint_define.png" alt="Rint define"><br><img src="/images/MARL/ELLMprocess.png" alt="ELLMprocess"><br>“We consider two forms of agent training: (1) a goal conditioned setting where the agent is given a sentence embedding of the list of suggested goals, π(a | o,E(g1:k)), and (2) a goal-free setting where the agent does not have access to the suggested goals, π(a | o). While Rint remains the same in either case, training a goal-conditioned agent introduces both challenges and benefits: <strong>it can take time for the agent to learn the meaning of the different goals and connect it to the reward</strong>, but having a language-goal conditioned policy can be moreamenable to downstream tasks than an agent just trained on an exploration reward.”</p>
+<h3 id="论文比较-Eureka"><a href="#论文比较-Eureka" class="headerlink" title="论文比较-Eureka"></a>论文比较-Eureka</h3><p>都是设计奖励函数以解决环境奖励稀疏问题，<a target="_blank" rel="noopener" href="https://github.com/eureka-research/Eureka?tab=readme-ov-file">Eureka</a>与ELLM有何不同？<br><img src="/images/Multi-Agents/Eureka1.png" alt="baseline"><br>相比之下，Eureka更加“黑盒”。ELLM是带有逻辑性的(如果你承认LLM有逻辑的话)，它根据游戏规则为代理给出建议，并鼓励代理达成这些目标；而Eureka是纯粹的奖励设计，它先生成一批奖励函数，再在环境中训练代理，挑选那些能让代理训练效果更好的奖励函数，并不断迭代</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2024/09/08/Reinforcement-Learning/" data-id="cm45fdq7n0000gsk31qsj4gnc" data-title="Reinforcement Learning" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2024/09/02/Multi-Agents/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Multi Agents</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/07/">July 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2024/09/08/Reinforcement-Learning/">Reinforcement Learning</a>
+          </li>
+        
+          <li>
+            <a href="/2024/09/02/Multi-Agents/">Multi Agents</a>
+          </li>
+        
+          <li>
+            <a href="/2024/07/28/ROS2-Learning/">ROS2_Learning</a>
+          </li>
+        
+          <li>
+            <a href="/2024/07/28/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2024 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
