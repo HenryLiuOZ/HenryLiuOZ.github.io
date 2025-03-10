@@ -241,7 +241,7 @@
 <h2 id="Chapter3：FRC-Three-simple"><a href="#Chapter3：FRC-Three-simple" class="headerlink" title="Chapter3：FRC Three simple"></a>Chapter3：FRC Three simple</h2><h3 id="FRC比赛规则"><a href="#FRC比赛规则" class="headerlink" title="- FRC比赛规则"></a>- FRC比赛规则</h3><p><img src="/images/Multi-Agents/FRC_field1.png" alt="FRC field1"><br><img src="/images/Multi-Agents/FRC_field2.png" alt="FRC field2"></p>
 <ol>
 <li>场景内允许两只队伍，每队三个机器人在场地内比赛，机器人通过将NOTE投入到 <em>己方场地内的</em> Speaker中以得分</li>
-<li>比赛前15秒，机器人处于自动阶段，按照预先设定的程序得分；在剩下的2分15秒内，操作手控制自己的机器人。机器人从Source处收集来NOTEs，并送入Speaker和<br>AMP中得分。每当一个队伍在其AMP中积累2个音符，操作者可以决定激活 <em>放大状态</em> 的时间。在放大状态的10秒内投入Speaker可以获得更高得分</li>
+<li>比赛前15秒，机器人处于自动阶段，按照预先设定的程序得分；在剩下的2分15秒内，操作手控制自己的机器人。机器人从Source处收集来NOTEs，并送入Speaker和AMP中得分。每当一个队伍在其AMP中积累2个音符，操作者可以决定激活 <em>放大状态</em> 的时间。在放大状态的10秒内投入Speaker可以获得更高得分</li>
 <li>如果双方队伍都在手动阶段的前45秒内按下 <em>合作竞争按钮</em> 重新利用一个音符（将投入AMP的NOTE取出用于得分），那么比赛中的所有队伍都会获得1个合作竞争分（这会影响他们在比赛中的排名），同时旋律奖励（一种得分成就，当一个队伍在扩音器和扬声器中积累了一定数量的音符时，可以获得额外的分数）所需的音符数量也会减少</li>
 <li>机器人被允许跨过半场以干扰对手的得分（如争夺对方的NOTE，迫使对方犯规等），并可以与对手发生接触（但接触时间需要小于5秒）</li>
 </ol>
@@ -259,15 +259,8 @@
 </ul>
 <p><a target="_blank" rel="noopener" href="https://github.com/HenryLiuOZ/FRCThree">Code Implementation</a>：包含了我的Script文件，训练好的网络与视频演示</p>
 <p><img src="/images/Multi-Agents/500000Training.png" alt="500000Training"></p>
-<h2 id="Chapter4：Mosimulator-FRC-field"><a href="#Chapter4：Mosimulator-FRC-field" class="headerlink" title="Chapter4：Mosimulator FRC field"></a>Chapter4：Mosimulator FRC field</h2><p>已经通过模仿学习+包含RNN的强化学习算法实现智能体在FRCOne场景下的自主得分</p>
-<p>只用基础的强化学习算法，代理难以学习到游戏的得分模式，一直难以得分。这可能是由于FRC环境中涉及类似投篮的时序性问题，代理在获得奖励和它做出正确行为之间有时间差。</p>
-<p>使用模仿学习+强化学习训练，代理能够得分，但效率不高</p>
-<p>使用模仿学习+RNN强化学习，代理拥有更高的得分效率</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/eureka-research/Eureka?tab=readme-ov-file">Eureka</a></p>
-<p><img src="/images/Multi-Agents/Eureka1.png" alt="baseline"></p>
-<p><img src="/images/Multi-Agents/Eureka2.png" alt="optimize goal"></p>
-<p><img src="/images/Multi-Agents/Eureka3.png" alt="fitness function"></p>
-
+<h2 id="Chapter4：Mosimulator-FRCThree"><a href="#Chapter4：Mosimulator-FRCThree" class="headerlink" title="Chapter4：Mosimulator FRCThree"></a>Chapter4：Mosimulator FRCThree</h2><h3 id="task-definition"><a href="#task-definition" class="headerlink" title="- task definition"></a>- task definition</h3><h3 id="results"><a href="#results" class="headerlink" title="- results"></a>- results</h3><p><a target="_blank" rel="noopener" href="https://github.com/HenryLiuOZ/MoSimFRC_ML">github repository</a><br><a target="_blank" rel="noopener" href="https://github.com/HenryLiuOZ/FRCVideos">videos</a>can be found here.<br>在无任何引导（使用了curiosity）的情况下，FRCThree包括FRCOne的训练速度是缓慢的，在大约120万个训练步数后才能学会基本的shoot-&gt;intake notes的循环并尽可能清空己方场地的notes。由于amp动作较为复杂且基础得分是shoot的一半(只有alliance source内部达到2个notes时，之后的10秒内，成功的note shoot会得到额外的三分分值)，环境代理几乎不会做出amp的动作。<br>从tensorboard上看，无指导的FRCThree训练大约在200万步遇到瓶颈，几乎不再上升，但此时单episode的平均得分大约是35，除去白送的15分，可以说提升空间还是很大的。但显然代理陷入了局部最优解。</p>
+<h3 id="further-works"><a href="#further-works" class="headerlink" title="- further works"></a>- further works</h3><h2 id="Chapter5：MALiR-——-Multi-Agent-LLM-instructed-Reinforcement-Learning"><a href="#Chapter5：MALiR-——-Multi-Agent-LLM-instructed-Reinforcement-Learning" class="headerlink" title="Chapter5：MALiR —— Multi-Agent LLM instructed Reinforcement Learning"></a>Chapter5：MALiR —— Multi-Agent LLM instructed Reinforcement Learning</h2><h3 id="method"><a href="#method" class="headerlink" title="- method"></a>- method</h3>
       
     </div>
     <footer class="article-footer">
